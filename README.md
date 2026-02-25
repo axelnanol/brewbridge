@@ -72,9 +72,9 @@ For GitHub Actions, set it as a repository variable (`vars.VITE_API_BASE_URL`) i
 
 ## GitHub Pages deployment
 
-Push to `main` and the `deploy.yml` workflow will build the web app and publish to the `gh-pages` branch automatically.
+Push to `main` and the `deploy.yml` workflow will build the web app and deploy it to GitHub Pages automatically.
 
-Enable GitHub Pages in **Settings → Pages → Source: Deploy from branch → gh-pages**.
+Enable GitHub Pages in **Settings → Pages → Source: GitHub Actions**.
 
 The site will be available at `https://<org>.github.io/brewbridge/`.
 
