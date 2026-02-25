@@ -16,12 +16,14 @@ export function renderViewer(container, params) {
     <div class="card">
       <h1>🍺 BrewBridge</h1>
       <h2>Viewer</h2>
-      <p class="info">Session: <code>${sessionId}</code></p>
+      <p class="info">Session: <code id="sessionIdDisplay"></code></p>
       <p class="info" id="pollStatus">Polling for messages…</p>
       <button id="downloadBtn" disabled>⬇ Download Latest JSON</button>
       <div id="messageList" style="margin-top:1rem;"></div>
     </div>
   `;
+  // Set sessionId via textContent to prevent XSS from malicious URL params
+  container.querySelector('#sessionIdDisplay').textContent = sessionId;
 
   const pollStatus = container.querySelector('#pollStatus');
   const messageList = container.querySelector('#messageList');
@@ -68,12 +70,13 @@ export function renderViewer(container, params) {
   function appendMessage(msg) {
     const div = document.createElement('div');
     div.className = 'message-item';
+    // Use Number() to ensure seq is a safe integer, never an arbitrary string from the API
+    const safeSeq = Number(msg.seq);
     div.innerHTML = `
-      <div class="message-meta">seq=${msg.seq} &bull; ${new Date(msg.timestamp).toLocaleString()}</div>
+      <div class="message-meta">seq=${safeSeq} &bull; ${escapeHtml(new Date(msg.timestamp).toLocaleString())}</div>
       <pre>${escapeHtml(JSON.stringify(msg.body, null, 2))}</pre>
     `;
-    messageList.appendChild(div);
-    // Keep newest at top by prepending instead; re-insert at top
+    // Prepend so newest messages appear at the top
     messageList.insertBefore(div, messageList.firstChild);
   }
 

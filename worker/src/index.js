@@ -30,13 +30,17 @@ function getCorsOrigin(request, env) {
 
 function corsHeaders(request, env) {
   const origin = getCorsOrigin(request, env);
-  if (!origin) return {};
+  if (!origin) {
+    // Origin is not allowed; omit Allow-Origin so browsers block the request.
+    // Include Vary so intermediate caches don't serve this to allowed origins.
+    return { Vary: 'Origin' };
+  }
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
-    ...(origin !== '*' ? { Vary: 'Origin' } : {}),
+    Vary: 'Origin',
   };
 }
 
@@ -68,11 +72,14 @@ export default {
       const stub = env.SESSIONS.get(id);
 
       // Initialise the DO with the generated keys
-      await stub.fetch(new Request('http://do/init', {
+      const initRes = await stub.fetch(new Request('http://do/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ writeKey, readKey }),
       }));
+      if (!initRes.ok) {
+        return jsonResponse({ error: 'Failed to initialize session' }, 500, cors);
+      }
 
       return jsonResponse({ sessionId, writeKey, readKey, expiresInSeconds: 600 }, 201, cors);
     }

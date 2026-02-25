@@ -2,6 +2,22 @@ const SESSION_TTL_MS = 10 * 60 * 1000; // 10 minutes
 const MAX_MESSAGES = 60;
 const MAX_BODY_BYTES = 64 * 1024; // 64 KB
 
+/**
+ * Constant-time string comparison to prevent timing attacks on key validation.
+ * Always iterates the full length of the longer string so neither length nor
+ * character differences leak measurable timing information.
+ */
+function timingSafeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const maxLen = Math.max(a.length, b.length);
+  // Fold any length mismatch into diff so we never return early
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < maxLen; i++) {
+    diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+  return diff === 0;
+}
+
 export class SessionDO {
   constructor(state, env) {
     this.state = state;
@@ -49,7 +65,7 @@ export class SessionDO {
     if (this.isExpired(session)) return Response.json({ error: 'Session expired' }, { status: 410 });
 
     const writeKey = url.searchParams.get('w');
-    if (writeKey !== session.writeKey) {
+    if (!timingSafeEqual(writeKey, session.writeKey)) {
       return Response.json({ error: 'Invalid write key' }, { status: 403 });
     }
 
@@ -89,7 +105,7 @@ export class SessionDO {
     if (this.isExpired(session)) return Response.json({ error: 'Session expired' }, { status: 410 });
 
     const readKey = url.searchParams.get('r');
-    if (readKey !== session.readKey) {
+    if (!timingSafeEqual(readKey, session.readKey)) {
       return Response.json({ error: 'Invalid read key' }, { status: 403 });
     }
 

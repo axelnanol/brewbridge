@@ -9,11 +9,14 @@ export async function createSession() {
 
 /** Post a message to a session. Returns { seq, timestamp } */
 export async function postMessage(sessionId, writeKey, body) {
-  const res = await fetch(`${BASE_URL}/v1/sessions/${sessionId}/messages?w=${writeKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const res = await fetch(
+    `${BASE_URL}/v1/sessions/${encodeURIComponent(sessionId)}/messages?w=${encodeURIComponent(writeKey)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  );
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Failed to send message (${res.status}): ${text}`);
@@ -24,7 +27,7 @@ export async function postMessage(sessionId, writeKey, body) {
 /** Poll messages since a given sequence number. Returns { messages, nextSince } */
 export async function getMessages(sessionId, readKey, since = 0) {
   const res = await fetch(
-    `${BASE_URL}/v1/sessions/${sessionId}/messages?r=${readKey}&since=${since}`
+    `${BASE_URL}/v1/sessions/${encodeURIComponent(sessionId)}/messages?r=${encodeURIComponent(readKey)}&since=${encodeURIComponent(since)}`
   );
   if (!res.ok) {
     const text = await res.text();

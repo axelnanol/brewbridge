@@ -1,12 +1,6 @@
 import { createSession, postMessage } from '../api.js';
 import { renderQR } from '../qr.js';
 
-const TEST_MESSAGE = {
-  event: 'test',
-  source: 'BrewBridge Sender',
-  payload: { value: 42, unit: 'ibu', timestamp: new Date().toISOString() },
-};
-
 export function renderSender(container) {
   container.innerHTML = `
     <div class="card">
@@ -45,7 +39,7 @@ export function renderSender(container) {
     try {
       session = await createSession();
       const base = window.location.href.split('#')[0];
-      const viewerUrl = `${base}#/view?s=${session.sessionId}&r=${session.readKey}`;
+      const viewerUrl = `${base}#/view?s=${encodeURIComponent(session.sessionId)}&r=${encodeURIComponent(session.readKey)}`;
       viewerUrlEl.textContent = viewerUrl;
       await renderQR(qrCanvas, viewerUrl);
       sessionInfo.style.display = 'block';
@@ -86,7 +80,13 @@ export function renderSender(container) {
   });
 
   testBtn.addEventListener('click', () => {
-    jsonInput.value = JSON.stringify(TEST_MESSAGE, null, 2);
-    send(TEST_MESSAGE);
+    // Build a fresh test message with the current timestamp each time
+    const testMessage = {
+      event: 'test',
+      source: 'BrewBridge Sender',
+      payload: { value: 42, unit: 'ibu', timestamp: new Date().toISOString() },
+    };
+    jsonInput.value = JSON.stringify(testMessage, null, 2);
+    send(testMessage);
   });
 }
