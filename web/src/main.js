@@ -210,8 +210,17 @@ route();
       return;
     }
 
-    // 🔴 Red (403) / 🟢 Green (404) — reserved for future enhancements
+    // 🔴 Red (403) / 🟢 Green (404) — navigate to previous / next page
     if (code === 403 || code === 404) {
+      const navRoutes = ['#/send', '#/view', '#/env', '#/debug'];
+      const currentHash = '#' + (window.location.hash || '#/send').slice(1).split('?')[0];
+      let navIdx = navRoutes.indexOf(currentHash);
+      if (navIdx < 0) navIdx = 0;
+      if (code === 403) {
+        window.location.hash = navRoutes[(navIdx - 1 + navRoutes.length) % navRoutes.length];
+      } else {
+        window.location.hash = navRoutes[(navIdx + 1) % navRoutes.length];
+      }
       e.preventDefault();
       return;
     }

@@ -430,8 +430,32 @@
     /* Overlay backdrop */
     #bb-overlay { display: none; }
 
-    /* Mobile-only topbar hint */
+    /* ── Mobile-only topbar hint */
     .topbar-mobile { display: none; }
+
+    /* ── Sender two-column layout ─────────────────────────────── */
+    .sender-layout {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .sender-main { flex: 1; min-width: 0; }
+
+    .sender-main .card { max-width: none; }
+
+    .sender-qr {
+      width: 280px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+    }
+
+    .sender-qr canvas { width: 100%; height: auto; display: block; margin: 0.5rem 0; }
 
     /* ── Mobile layout (≤ 768 px) ───────────────────────────── */
     @media (max-width: 768px) {
@@ -502,9 +526,13 @@
       h2                      { font-size: 22px; }
       h3                      { font-size: 18px; }
       .card                   { padding: 1rem; }
+
+      /* Sender: stack columns vertically on mobile */
+      .sender-layout          { flex-direction: column; }
+      .sender-qr              { width: 100%; position: static; }
     }
   </style>
-  <script defer src="./assets/index-CSk-dOlJ.js"></script>
+  <script defer src="./assets/index-Dk5jm4j1.js"></script>
 </head>
 <body>
   <div id="bb-shell">
@@ -536,8 +564,8 @@
       <div id="bb-hints">
         <span>⬆⬇ — scroll</span>
         <span>⬅➡ — switch panel</span>
-        <span>🔴 Red — (future)</span>
-        <span>🟢 Green — (future)</span>
+        <span>🔴 Red — prev page</span>
+        <span>🟢 Green — next page</span>
         <span>🟡 Yellow — toggle view</span>
         <span>🔵 Blue — back to top</span>
       </div>

@@ -1,6 +1,7 @@
 {
   "name": "@axelnanol/brewbridge",
   "appName": "BrewBridge",
+  "description": "TizenBrew data bridge for sending and viewing structured messages between devices",
   "version": "0003",
   "packageType": "app",
   "appPath": "web/dist/index.html",

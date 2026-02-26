@@ -4,29 +4,35 @@ import { buildDebugInfo } from './debug.js';
 
 export function renderSender(container) {
   container.innerHTML = `
-    <div class="card">
-      <h1>📤 Sender</h1>
-      <button id="createBtn">Create New Session</button>
-      <div id="sessionInfo" style="display:none">
+    <div class="sender-layout">
+      <div class="sender-main">
+        <div class="card">
+          <h1>📤 Sender</h1>
+          <button id="createBtn">Create New Session</button>
+          <div id="sessionInfo" style="display:none">
+            <hr/>
+            <h3>Send a Message</h3>
+            <div class="view-controls">
+              <label class="toggle-label">
+                <input type="checkbox" id="inputToggle" role="switch" aria-checked="false" />
+                <span id="inputToggleText">Mode: Text</span>
+              </label>
+            </div>
+            <p class="info" id="inputHint">Enter key: value pairs (one per line). Indent with spaces to nest.</p>
+            <textarea id="msgInput" placeholder="event: brew_update&#10;payload:&#10;  temperature: 68.5&#10;  gravity: 1.048"></textarea>
+            <br/>
+            <button id="sendBtn">Send</button>
+            <button id="testBtn">Send Test Message</button>
+            <button id="envBtn">Send Environment Info</button>
+            <button id="debugBtn">Send Debug Info</button>
+            <p class="info" id="sendStatus"></p>
+          </div>
+        </div>
+      </div>
+      <div class="sender-qr" id="senderQrPanel" style="display:none">
         <p class="info">Viewer URL (share this):</p>
         <div class="url-box" id="viewerUrl"></div>
-        <canvas id="qrCanvas" style="display:block;margin:0.5rem 0;"></canvas>
-        <hr/>
-        <h3>Send a Message</h3>
-        <div class="view-controls">
-          <label class="toggle-label">
-            <input type="checkbox" id="inputToggle" role="switch" aria-checked="false" />
-            <span id="inputToggleText">Mode: Text</span>
-          </label>
-        </div>
-        <p class="info" id="inputHint">Enter key: value pairs (one per line). Indent with spaces to nest.</p>
-        <textarea id="msgInput" placeholder="event: brew_update&#10;payload:&#10;  temperature: 68.5&#10;  gravity: 1.048"></textarea>
-        <br/>
-        <button id="sendBtn">Send</button>
-        <button id="testBtn">Send Test Message</button>
-        <button id="envBtn">Send Environment Info</button>
-        <button id="debugBtn">Send Debug Info</button>
-        <p class="info" id="sendStatus"></p>
+        <canvas id="qrCanvas"></canvas>
       </div>
     </div>
   `;
@@ -36,6 +42,7 @@ export function renderSender(container) {
 
   const createBtn = container.querySelector('#createBtn');
   const sessionInfo = container.querySelector('#sessionInfo');
+  const senderQrPanel = container.querySelector('#senderQrPanel');
   const viewerUrlEl = container.querySelector('#viewerUrl');
   const qrCanvas = container.querySelector('#qrCanvas');
   const msgInput = container.querySelector('#msgInput');
@@ -89,6 +96,7 @@ export function renderSender(container) {
       const viewerUrl = `${base}#/view?s=${encodeURIComponent(session.sessionId)}&r=${encodeURIComponent(session.readKey)}`;
       viewerUrlEl.textContent = viewerUrl;
       await renderQR(qrCanvas, viewerUrl);
+      senderQrPanel.style.display = '';
       sessionInfo.style.display = 'block';
       createBtn.textContent = 'Create New Session';
       createBtn.disabled = false;
