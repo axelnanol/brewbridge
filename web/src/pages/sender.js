@@ -17,6 +17,7 @@ export function renderSender(container) {
         <br/>
         <button id="sendBtn">Send JSON</button>
         <button id="testBtn">Send Test Message</button>
+        <button id="envBtn">Send Environment Info</button>
         <p class="info" id="sendStatus"></p>
       </div>
     </div>
@@ -31,6 +32,7 @@ export function renderSender(container) {
   const jsonInput = container.querySelector('#jsonInput');
   const sendBtn = container.querySelector('#sendBtn');
   const testBtn = container.querySelector('#testBtn');
+  const envBtn = container.querySelector('#envBtn');
   const sendStatus = container.querySelector('#sendStatus');
 
   createBtn.addEventListener('click', async () => {
@@ -56,6 +58,7 @@ export function renderSender(container) {
     if (!session) return;
     sendBtn.disabled = true;
     testBtn.disabled = true;
+    envBtn.disabled = true;
     sendStatus.textContent = 'Sending…';
     try {
       const result = await postMessage(session.sessionId, session.writeKey, data);
@@ -65,6 +68,7 @@ export function renderSender(container) {
     } finally {
       sendBtn.disabled = false;
       testBtn.disabled = false;
+      envBtn.disabled = false;
     }
   }
 
@@ -88,5 +92,70 @@ export function renderSender(container) {
     };
     jsonInput.value = JSON.stringify(testMessage, null, 2);
     send(testMessage);
+  });
+
+  function buildEnvironmentInfo() {
+    const nav = navigator;
+    const conn = nav.connection || nav.mozConnection || nav.webkitConnection;
+    const info = {
+      event: 'env_info',
+      source: 'BrewBridge Sender',
+      timestamp: new Date().toISOString(),
+      userAgent: nav.userAgent,
+      platform: nav.platform,
+      language: nav.language,
+      languages: nav.languages ? Array.from(nav.languages) : undefined,
+      cookieEnabled: nav.cookieEnabled,
+      onLine: nav.onLine,
+      hardwareConcurrency: nav.hardwareConcurrency,
+      deviceMemory: nav.deviceMemory,
+      screen: {
+        width: screen.width,
+        height: screen.height,
+        availWidth: screen.availWidth,
+        availHeight: screen.availHeight,
+        colorDepth: screen.colorDepth,
+        pixelDepth: screen.pixelDepth,
+        orientation: screen.orientation
+          ? { type: screen.orientation.type, angle: screen.orientation.angle }
+          : undefined,
+      },
+      window: {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio,
+      },
+      connection: conn
+        ? {
+            type: conn.type,
+            effectiveType: conn.effectiveType,
+            downlink: conn.downlink,
+            rtt: conn.rtt,
+            saveData: conn.saveData,
+          }
+        : undefined,
+      tizen: (function () {
+        if (typeof window.tizen === 'undefined') return { available: false };
+        const t = { available: true };
+        try {
+          t.version = window.tizen.systeminfo
+            ? window.tizen.systeminfo.getCapabilityValue('http://tizen.org/feature/platform.version')
+            : undefined;
+        } catch (_) {
+          // getCapabilityValue may throw on restricted profiles; leave version undefined
+        }
+        return t;
+      }()),
+      webapis: typeof window.webapis !== 'undefined'
+        ? { available: true }
+        : { available: false },
+    };
+    return info;
+  }
+
+  envBtn.addEventListener('click', () => {
+    const info = buildEnvironmentInfo();
+    jsonInput.value = JSON.stringify(info, null, 2);
+    send(info);
   });
 }
