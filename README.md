@@ -84,7 +84,7 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 BrewBridge can be installed directly on a Samsung Smart TV running [TizenBrew](https://github.com/reisir/tizenbrew).
 
-The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, and `ColorF3Blue`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Red and Green are reserved for future enhancements.
+The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, `ColorF3Blue`, `ChannelUp`, and `ChannelDown`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Channel Up / Channel Down scroll the content pane up or down by one page; Red and Green navigate between app pages.
 
 ### Install from the TV
 
@@ -107,12 +107,12 @@ TizenBrew fetches files directly from the repository at the release tag, so the 
 2. Commit the build output and any source changes:
    ```bash
    git add web/dist
-   git commit -m "chore: build web for v0.1.0"
+   git commit -m "chore: build web for 0004"
    ```
-3. Create and push a git tag (use a semver version matching `package.json`):
+3. Create and push a git tag (use a version matching `package.json`, e.g. `0004`):
    ```bash
-   git tag v0.1.0
-   git push origin v0.1.0
+   git tag 0004
+   git push origin 0004
    ```
 4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
 
