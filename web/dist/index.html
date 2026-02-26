@@ -211,7 +211,96 @@
 
     .message-meta { font-size: 0.6em; color: var(--text-muted); margin-bottom: 0.25rem; }
 
+    .message-body pre { margin: 0; font-size: 0.65rem; white-space: pre-wrap; word-break: break-all; color: #e3b341; }
+
     pre { margin: 0; font-size: 0.65rem; white-space: pre-wrap; word-break: break-all; color: #e3b341; }
+
+    /* ── View / input controls row ───────────────────────────── */
+    .view-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 0.5rem 0;
+    }
+
+    /* ── Toggle label (checkbox + text) ──────────────────────── */
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .toggle-label input[type="checkbox"] {
+      width: 1.2em;
+      height: 1.2em;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* ── Human-readable renderer styles ──────────────────────── */
+    .hr-dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 0.2rem 1rem;
+      font-size: 0.75rem;
+      margin: 0.25rem 0;
+    }
+
+    .hr-dl dt {
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .hr-dl dd { margin: 0; color: var(--text); }
+
+    .hr-table {
+      border-collapse: collapse;
+      font-size: 0.7rem;
+      width: 100%;
+      margin: 0.25rem 0;
+    }
+
+    .hr-table th {
+      background: var(--surface);
+      color: var(--accent);
+      font-weight: 600;
+      text-align: left;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+    }
+
+    .hr-table td {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .hr-table.hr-nested td.hr-key {
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+      width: 1%;
+    }
+
+    .hr-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+    .hr-list {
+      margin: 0.25rem 0 0.25rem 1.2rem;
+      font-size: 0.75rem;
+      color: var(--text);
+    }
+
+    .hr-str  { color: var(--text); }
+    .hr-num  { color: #79c0ff; }
+    .hr-bool { color: #56d364; }
+    .hr-null { color: var(--text-muted); font-style: italic; }
+    .hr-empty{ color: var(--text-muted); font-style: italic; font-size: 0.7rem; }
 
     code {
       background: #1c2128;
@@ -342,7 +431,7 @@
       .card                   { padding: 1rem; }
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-H0r5LlJD.js"></script>
+  <script type="module" crossorigin src="./assets/index-Dy2W1oBv.js"></script>
 </head>
 <body>
   <div id="bb-shell">
@@ -372,6 +461,9 @@
       <div id="bb-hints">
         <span>⬆⬇ — scroll</span>
         <span>⬅➡ — switch panel</span>
+        <span>🔴 Red — (future)</span>
+        <span>🟢 Green — (future)</span>
+        <span>🟡 Yellow — toggle view</span>
         <span>🔵 Blue — back to top</span>
       </div>
     </div>

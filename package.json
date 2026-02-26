@@ -4,5 +4,5 @@
   "version": "0001",
   "packageType": "app",
   "appPath": "web/dist/index.html",
-  "keys": []
+  "keys": ["ColorF0Red", "ColorF1Green", "ColorF2Yellow", "ColorF3Blue"]
 }
