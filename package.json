@@ -1,7 +1,7 @@
 {
   "name": "@axelnanol/brewbridge",
   "appName": "BrewBridge",
-  "version": "0.1.0",
+  "version": "0001",
   "packageType": "app",
   "appPath": "web/dist/index.html",
   "keys": []
