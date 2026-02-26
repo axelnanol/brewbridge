@@ -72,11 +72,49 @@ For GitHub Actions, set it as a repository variable (`vars.VITE_API_BASE_URL`) i
 
 ## GitHub Pages deployment
 
-Push to `main` and the `deploy.yml` workflow will build the web app and publish to the `gh-pages` branch automatically.
+Push to `main` and the `deploy.yml` workflow will build the web app and deploy it to GitHub Pages automatically.
 
-Enable GitHub Pages in **Settings → Pages → Source: Deploy from branch → gh-pages**.
+Enable GitHub Pages in **Settings → Pages → Source: GitHub Actions**.
 
 The site will be available at `https://<org>.github.io/brewbridge/`.
+
+---
+
+## Installing as a TizenBrew module
+
+BrewBridge can be installed directly on a Samsung Smart TV running [TizenBrew](https://github.com/reisir/tizenbrew).
+
+The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, `ColorF3Blue`, `ChannelUp`, and `ChannelDown`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Channel Up / Channel Down scroll the content pane up or down by one page; Red and Green navigate between app pages.
+
+### Install from the TV
+
+1. On your TV, open TizenBrew and navigate to the **Module Manager** (3rd icon from the left).
+2. Select **Add Module**.
+3. Enter `axelnanol/brewbridge`.
+4. TizenBrew fetches the latest release tag, reads `package.json`, and registers the module.
+5. BrewBridge now appears in your TizenBrew dashboard.
+
+### Publishing a release
+
+TizenBrew fetches files directly from the repository at the release tag, so the built assets in `web/dist/` must be committed before the tag is created.
+
+1. Build the web app:
+   ```bash
+   cd web
+   npm install
+   npm run build   # outputs to web/dist/
+   ```
+2. Commit the build output and any source changes:
+   ```bash
+   git add web/dist
+   git commit -m "chore: build web for 0004"
+   ```
+3. Create and push a git tag (use a version matching `package.json`, e.g. `0004`):
+   ```bash
+   git tag 0004
+   git push origin 0004
+   ```
+4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
 
 ---
 
@@ -100,6 +138,7 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 ```
 brewbridge/
+├── package.json          TizenBrew module metadata (app type)
 ├── web/                  Vite + vanilla JS web app
 │   ├── src/
 │   │   ├── main.js       Hash router
