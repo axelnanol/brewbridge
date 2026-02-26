@@ -14,8 +14,7 @@ export function renderViewer(container, params) {
 
   container.innerHTML = `
     <div class="card">
-      <h1>🍺 BrewBridge</h1>
-      <h2>Viewer</h2>
+      <h1>📺 Viewer</h1>
       <p class="info">Session: <code id="sessionIdDisplay"></code></p>
       <p class="info" id="pollStatus">Polling for messages…</p>
       <button id="downloadBtn" disabled>⬇ Download Latest JSON</button>

@@ -4,8 +4,7 @@ import { renderQR } from '../qr.js';
 export function renderSender(container) {
   container.innerHTML = `
     <div class="card">
-      <h1>🍺 BrewBridge</h1>
-      <h2>Sender</h2>
+      <h1>📤 Sender</h1>
       <button id="createBtn">Create New Session</button>
       <div id="sessionInfo" style="display:none">
         <p class="info">Viewer URL (share this):</p>
