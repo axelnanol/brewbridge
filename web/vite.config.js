@@ -10,4 +10,30 @@ export default defineConfig({
       },
     },
   },
+  plugins: [
+    {
+      // Tizen TV browsers do not support ES modules (type="module").
+      // Convert module script tags to plain deferred scripts so the
+      // bundled IIFE executes correctly on older Chromium-based TVs.
+      name: 'tizen-compat',
+      transformIndexHtml: {
+        order: 'post',
+        handler(html) {
+          // Strip type="module" (and optional crossorigin) from <script> tags,
+          // replacing with defer so the IIFE executes on Tizen's older Chromium.
+          // Uses a callback to handle any attribute order Vite may produce.
+          return html.replace(
+            /<script\b([^>]*?)\btype=["']module["']([^>]*?)>/g,
+            (_match, before, after) => {
+              const rest = (before + after)
+                .replace(/\bcrossorigin(=["'][^"']*["'])?\s*/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+              return `<script defer${rest ? ' ' + rest : ''}>`;
+            },
+          );
+        },
+      },
+    },
+  ],
 });

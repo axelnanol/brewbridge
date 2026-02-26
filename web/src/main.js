@@ -210,8 +210,31 @@ route();
       return;
     }
 
-    // 🔴 Red (403) / 🟢 Green (404) — reserved for future enhancements
+    // 📺 Channel Down (428) / Channel Up (427) — page down / page up in content
+    if (code === 427 || code === 428) {
+      var scrollPane = document.getElementById('bb-content');
+      if (scrollPane) {
+        var delta = scrollPane.clientHeight * 0.9;
+        scrollPane.scrollBy({ top: code === 428 ? delta : -delta, behavior: 'smooth' });
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // 🔴 Red (403) / 🟢 Green (404) — navigate to previous / next page
     if (code === 403 || code === 404) {
+      const navRoutes = ['#/send', '#/view', '#/env', '#/debug'];
+      const baseHash = (window.location.hash && window.location.hash !== '#')
+        ? window.location.hash
+        : '#/send';
+      const currentHash = baseHash.replace(/^#+/, '#').split('?')[0];
+      let navIdx = navRoutes.indexOf(currentHash);
+      if (navIdx < 0) navIdx = 0;
+      if (code === 403) {
+        window.location.hash = navRoutes[(navIdx - 1 + navRoutes.length) % navRoutes.length];
+      } else {
+        window.location.hash = navRoutes[(navIdx + 1) % navRoutes.length];
+      }
       e.preventDefault();
       return;
     }
