@@ -98,23 +98,23 @@ The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. T
 
 TizenBrew fetches files directly from the repository at the release tag, so the built assets in `web/dist/` must be committed before the tag is created.
 
-1. Build the web app:
-   ```bash
-   cd web
-   npm install
-   npm run build   # outputs to web/dist/
+The `deploy.yml` workflow now **automatically rebuilds and commits `web/dist/`** on every push to `main`, so the committed assets are always in sync with the source. A version-stamped entry-point (e.g. `web/dist/index-0005.html`) is also generated alongside `index.html`; this gives each release a unique URL on jsdelivr so that aggressive CDN caching never serves a stale copy to TizenBrew users.
+
+To cut a new release:
+
+1. Bump `version` in `package.json` (root) **and** update `appPath` to match the new version, e.g.:
+   ```json
+   "version": "0005",
+   "appPath": "web/dist/index-0005.html"
    ```
-2. Commit the build output and any source changes:
+2. Push the change to `main` — CI will rebuild `web/dist/` (including `index-0005.html`) and commit it automatically. **Wait for the workflow to complete** (check the Actions tab) before creating the tag.
+3. Create and push a git tag matching the new version:
    ```bash
-   git add web/dist
-   git commit -m "chore: build web for 0004"
+   git pull          # fetch the CI commit
+   git tag 0005
+   git push origin 0005
    ```
-3. Create and push a git tag (use a version matching `package.json`, e.g. `0004`):
-   ```bash
-   git tag 0004
-   git push origin 0004
-   ```
-4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
+4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index-0005.html` directly from the repository at that tag.
 
 ---
 

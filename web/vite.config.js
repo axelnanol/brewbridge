@@ -1,4 +1,11 @@
 import { defineConfig } from 'vite';
+import { readFileSync, copyFileSync, existsSync, readdirSync, unlinkSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootPkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'));
+const version = rootPkg.version;
 
 export default defineConfig({
   base: './',
@@ -33,6 +40,26 @@ export default defineConfig({
             },
           );
         },
+      },
+    },
+    {
+      // Each release gets a version-stamped entry-point (e.g. index-0004.html)
+      // so that jsdelivr, which caches by URL, always serves a fresh file for
+      // every new version rather than a stale cached copy of the previous one.
+      name: 'versioned-html',
+      closeBundle() {
+        const distDir = resolve(__dirname, 'dist');
+        // Remove stale index-*.html files left over from previous builds.
+        if (existsSync(distDir)) {
+          readdirSync(distDir)
+            .filter(f => /^index-\d+\.html$/.test(f))
+            .forEach(f => unlinkSync(resolve(distDir, f)));
+        }
+        // Copy index.html → index-{version}.html (index.html kept for GitHub Pages).
+        copyFileSync(
+          resolve(distDir, 'index.html'),
+          resolve(distDir, `index-${version}.html`),
+        );
       },
     },
   ],
