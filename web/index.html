@@ -5,19 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BrewBridge</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 1rem;
-      background: #f5f5f5;
-      color: #222;
+    /* ── Reset & Base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --border:    #30363d;
+      --accent:    #58a6ff;
+      --accent-dk: #1f6feb;
+      --text:      #e6edf3;
+      --text-muted:#8b949e;
+      --focus-clr: #f78166;
     }
-    h1 { color: #4a2c00; }
-    h2 { color: #7a4f1e; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 28px;           /* large for TV viewing distance */
+      line-height: 1.6;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.3em;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0.5em 0 0.3em;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0.5em 0 0.3em;
+    }
+
     button {
-      background: #7a4f1e;
-      color: #fff;
+      background: var(--accent-dk);
+      color: var(--text);
       border: none;
       padding: 0.5rem 1.2rem;
       border-radius: 4px;
@@ -25,45 +62,82 @@
       font-size: 1rem;
       margin: 0.25rem 0;
     }
-    button:hover { background: #5a380e; }
-    button:disabled { background: #aaa; cursor: not-allowed; }
+
+    button:hover, button:focus { background: var(--accent); outline: none; }
+    button:disabled { background: #333; color: var(--text-muted); cursor: not-allowed; }
+
     textarea {
       width: 100%;
       min-height: 120px;
-      font-family: monospace;
-      font-size: 0.9rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
       padding: 0.5rem;
-      border: 1px solid #ccc;
+      background: #1c2128;
+      color: #e3b341;
+      border: 1px solid var(--border);
       border-radius: 4px;
     }
+
     .card {
-      background: #fff;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1.5rem;
+      padding: 1.5rem 2rem;
       max-width: 680px;
-      margin: 1rem auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin: 1.5rem auto;
     }
-    .info { color: #555; font-size: 0.9rem; margin: 0.5rem 0; }
+
+    .info { color: var(--text-muted); font-size: 0.75em; margin: 0.5rem 0; }
+
     .url-box {
-      font-family: monospace;
-      font-size: 0.85rem;
-      background: #f0ece6;
+      font-family: 'Courier New', monospace;
+      font-size: 0.65rem;
+      background: #1c2128;
+      color: #e3b341;
+      border: 1px solid var(--border);
       padding: 0.5rem;
       border-radius: 4px;
       word-break: break-all;
       margin: 0.5rem 0;
     }
+
     .message-item {
-      background: #f9f6f1;
-      border-left: 3px solid #7a4f1e;
+      background: #1c2128;
+      border-left: 3px solid var(--accent);
       padding: 0.5rem 0.75rem;
       margin: 0.5rem 0;
       border-radius: 0 4px 4px 0;
     }
-    .message-meta { font-size: 0.75rem; color: #888; margin-bottom: 0.25rem; }
-    pre { margin: 0; font-size: 0.85rem; white-space: pre-wrap; word-break: break-all; }
-    #app { max-width: 720px; margin: 0 auto; }
+
+    .message-meta { font-size: 0.6em; color: var(--text-muted); margin-bottom: 0.25rem; }
+
+    pre { margin: 0; font-size: 0.65rem; white-space: pre-wrap; word-break: break-all; color: #e3b341; }
+
+    code {
+      background: #1c2128;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8em;
+      color: #e3b341;
+    }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+    #app { max-width: 720px; margin: 0 auto; padding: 1rem; }
+
+    /* ── Focus ring — TV-optimised ─────────────────────────── */
+    :focus { outline: 3px solid var(--focus-clr); outline-offset: 2px; }
+
+    /* ── Mobile layout (≤ 768 px) ───────────────────────────── */
+    @media (max-width: 768px) {
+      html, body { font-size: 16px; }
+      .card { padding: 1rem; margin: 1rem auto; }
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; }
+      h3 { font-size: 18px; }
+    }
   </style>
 </head>
 <body>

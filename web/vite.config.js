@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/brewbridge/',
+  base: './',
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      output: {
+        format: 'iife',
+      },
+    },
   },
 });
