@@ -80,6 +80,44 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 ---
 
+## Installing as a TizenBrew module
+
+BrewBridge can be installed directly on a Samsung Smart TV running [TizenBrew](https://github.com/reisir/tizenbrew).
+
+The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists any [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names (e.g. colour buttons) that the app needs to register; it is empty because BrewBridge currently uses only standard directional and confirm keys.
+
+### Install from the TV
+
+1. On your TV, open TizenBrew and navigate to the **Module Manager** (3rd icon from the left).
+2. Select **Add Module**.
+3. Enter `axelnanol/brewbridge`.
+4. TizenBrew fetches the latest release tag, reads `package.json`, and registers the module.
+5. BrewBridge now appears in your TizenBrew dashboard.
+
+### Publishing a release
+
+TizenBrew fetches files directly from the repository at the release tag, so the built assets in `web/dist/` must be committed before the tag is created.
+
+1. Build the web app:
+   ```bash
+   cd web
+   npm install
+   npm run build   # outputs to web/dist/
+   ```
+2. Commit the build output and any source changes:
+   ```bash
+   git add web/dist
+   git commit -m "chore: build web for v0.1.0"
+   ```
+3. Create and push a git tag (use a semver version matching `package.json`):
+   ```bash
+   git tag v0.1.0
+   git push origin v0.1.0
+   ```
+4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
+
+---
+
 ## How to use
 
 ### Sender page (`/#/send`)
@@ -100,6 +138,7 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 ```
 brewbridge/
+├── package.json          TizenBrew module metadata (app type)
 ├── web/                  Vite + vanilla JS web app
 │   ├── src/
 │   │   ├── main.js       Hash router
