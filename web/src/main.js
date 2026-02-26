@@ -1,5 +1,7 @@
 import { renderSender } from './pages/sender.js';
 import { renderViewer } from './pages/viewer.js';
+import { renderEnvironment } from './pages/environment.js';
+import { renderDebug } from './pages/debug.js';
 
 const content = document.getElementById('bb-content');
 const menuBtn = document.getElementById('bb-menu-btn');
@@ -70,6 +72,10 @@ function route() {
       // Fallback when sessionStorage is unavailable or throws
       renderViewer(content, params);
     }
+  } else if (path === '/env') {
+    renderEnvironment(content);
+  } else if (path === '/debug') {
+    renderDebug(content);
   } else {
     content.innerHTML = '<p class="info">Select a page from the sidebar.</p>';
   }

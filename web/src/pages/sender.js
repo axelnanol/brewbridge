@@ -1,5 +1,6 @@
 import { createSession, postMessage } from '../api.js';
 import { renderQR } from '../qr.js';
+import { buildDebugInfo } from './debug.js';
 
 export function renderSender(container) {
   container.innerHTML = `
@@ -24,6 +25,7 @@ export function renderSender(container) {
         <button id="sendBtn">Send</button>
         <button id="testBtn">Send Test Message</button>
         <button id="envBtn">Send Environment Info</button>
+        <button id="debugBtn">Send Debug Info</button>
         <p class="info" id="sendStatus"></p>
       </div>
     </div>
@@ -40,6 +42,7 @@ export function renderSender(container) {
   const sendBtn = container.querySelector('#sendBtn');
   const testBtn = container.querySelector('#testBtn');
   const envBtn = container.querySelector('#envBtn');
+  const debugBtn = container.querySelector('#debugBtn');
   const sendStatus = container.querySelector('#sendStatus');
   const inputToggle = container.querySelector('#inputToggle');
   const inputToggleText = container.querySelector('#inputToggleText');
@@ -101,6 +104,7 @@ export function renderSender(container) {
     sendBtn.disabled = true;
     testBtn.disabled = true;
     envBtn.disabled = true;
+    debugBtn.disabled = true;
     sendStatus.textContent = 'Sending…';
     try {
       const result = await postMessage(session.sessionId, session.writeKey, data);
@@ -111,6 +115,7 @@ export function renderSender(container) {
       sendBtn.disabled = false;
       testBtn.disabled = false;
       envBtn.disabled = false;
+      debugBtn.disabled = false;
     }
   }
 
@@ -214,6 +219,14 @@ export function renderSender(container) {
 
   envBtn.addEventListener('click', () => {
     const info = buildEnvironmentInfo();
+    msgInput.value = useTextMode
+      ? jsonToText(info)
+      : JSON.stringify(info, null, 2);
+    send(info);
+  });
+
+  debugBtn.addEventListener('click', () => {
+    const info = buildDebugInfo();
     msgInput.value = useTextMode
       ? jsonToText(info)
       : JSON.stringify(info, null, 2);
