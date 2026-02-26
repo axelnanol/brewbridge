@@ -9,8 +9,20 @@ export function renderViewer(container, params) {
   const readKey = params.get('r');
 
   if (!sessionId || !readKey) {
-    container.innerHTML = `<div class="card"><h2>⚠️ Missing session parameters</h2>
-      <p>Expected URL: <code>#/view?s=&lt;sessionId&gt;&r=&lt;readKey&gt;</code></p></div>`;
+    container.innerHTML = `<div class="card">
+      <h2>📺 Viewer</h2>
+      <p>No active viewing session was found.</p>
+      <p class="info">
+        To use the Viewer, open the <strong>Sender</strong> page, create a session,
+        then scan the QR code or follow the link it generates.
+        The link includes a session ID and read key that are needed here.
+      </p>
+      <p class="info">
+        If you arrived here by manually typing the address, make sure the URL
+        contains both a session ID (<code>s=…</code>) and a read key (<code>r=…</code>).
+      </p>
+      <a class="nav-link" href="#/send" style="display:inline-block;margin-top:1rem;">Go to Sender →</a>
+    </div>`;
     return;
   }
 
@@ -21,6 +33,7 @@ export function renderViewer(container, params) {
       <p class="info" id="pollStatus">Polling for messages…</p>
       <div class="view-controls">
         <button id="downloadBtn" disabled>⬇ Download Latest JSON</button>
+        <button id="clearBtn">🗑 Clear Messages</button>
         <label class="toggle-label">
           <input type="checkbox" id="viewToggle" role="switch" aria-checked="false" />
           <span id="viewToggleText">Show: JSON</span>
@@ -34,6 +47,7 @@ export function renderViewer(container, params) {
   const pollStatus = container.querySelector('#pollStatus');
   const messageList = container.querySelector('#messageList');
   const downloadBtn = container.querySelector('#downloadBtn');
+  const clearBtn = container.querySelector('#clearBtn');
   const viewToggle = container.querySelector('#viewToggle');
   const viewToggleText = container.querySelector('#viewToggleText');
 
@@ -84,6 +98,14 @@ export function renderViewer(container, params) {
     a.download = `brewbridge-${sessionId}-seq${latestMessage.seq}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    messageList.innerHTML = '';
+    renderedMessages.length = 0;
+    latestMessage = null;
+    downloadBtn.disabled = true;
+    pollStatus.textContent = 'Messages cleared. Polling for new messages…';
   });
 
   async function poll() {

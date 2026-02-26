@@ -323,6 +323,79 @@
 
     hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
 
+    /* ── Environment page table ──────────────────────────────── */
+    .env-card { max-width: 100%; }
+
+    .env-table {
+      border-collapse: collapse;
+      font-size: 0.72rem;
+      width: 100%;
+      margin: 0.5rem 0 1.5rem;
+      table-layout: fixed;
+    }
+
+    .env-table th {
+      background: var(--surface);
+      color: var(--accent);
+      font-weight: 600;
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+    }
+
+    .env-table th:nth-child(1) { width: 22%; }
+    .env-table th:nth-child(2) { width: 28%; }
+    .env-table th:nth-child(3) { width: 50%; }
+
+    .env-table td {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    .env-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+    .env-key  { font-weight: 600; color: var(--accent); }
+    .env-val  { color: var(--text); }
+    .env-false { color: #f85149; }
+    .env-desc { color: var(--text-muted); font-size: 0.9em; }
+
+    /* ── Debug page table ────────────────────────────────────── */
+    .dbg-card { max-width: 100%; }
+
+    .dbg-table {
+      border-collapse: collapse;
+      font-size: 0.68rem;
+      width: 100%;
+      margin: 0.5rem 0 1.5rem;
+      table-layout: fixed;
+    }
+
+    .dbg-table th {
+      background: var(--surface);
+      color: var(--accent);
+      font-weight: 600;
+      text-align: left;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+    }
+
+    .dbg-table th:nth-child(1) { width: 38%; }
+    .dbg-table th:nth-child(2) { width: 62%; }
+
+    .dbg-table td {
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      word-break: break-all;
+    }
+
+    .dbg-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+    .dbg-key { font-weight: 600; color: var(--accent); word-break: break-word; }
+    .dbg-val { color: #e3b341; font-family: 'Courier New', monospace; }
+
     /* ── Focus ring — TV-optimised ─────────────────────────── */
     :focus { outline: 3px solid var(--focus-clr); outline-offset: 2px; }
 
@@ -446,6 +519,8 @@
       <nav id="bb-nav" aria-label="Pages">
         <a class="nav-link" href="#/send">📤 Sender</a>
         <a class="nav-link" href="#/view">📺 Viewer</a>
+        <a class="nav-link" href="#/env">🌍 Environment</a>
+        <a class="nav-link" href="#/debug">🔬 Debug</a>
       </nav>
     </aside>
 
