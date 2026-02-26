@@ -84,7 +84,7 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 BrewBridge can be installed directly on a Samsung Smart TV running [TizenBrew](https://github.com/reisir/tizenbrew).
 
-The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists any [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names (e.g. colour buttons) that the app needs to register; it is empty because BrewBridge currently uses only standard directional and confirm keys.
+The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, and `ColorF3Blue`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Red and Green are reserved for future enhancements.
 
 ### Install from the TV
 

@@ -43,26 +43,32 @@ function route() {
   if (path === '/send') {
     renderSender(content);
   } else if (path === '/view') {
-    // Session persistence: store valid params and restore when navigating back
-    const s = params.get('s');
-    const r = params.get('r');
-    if (s && r) {
-      sessionStorage.setItem('bb_s', s);
-      sessionStorage.setItem('bb_r', r);
-      renderViewer(content, params);
-    } else {
-      const storedS = sessionStorage.getItem('bb_s');
-      const storedR = sessionStorage.getItem('bb_r');
-      if (storedS && storedR) {
-        const restored = new URLSearchParams({ s: storedS, r: storedR });
-        history.replaceState(
-          null, '',
-          `#/view?s=${encodeURIComponent(storedS)}&r=${encodeURIComponent(storedR)}`
-        );
-        renderViewer(content, restored);
-      } else {
+    // Session persistence: store valid params and restore when navigating back.
+    // Wrapped in try/catch because sessionStorage can throw in privacy/sandbox modes.
+    try {
+      const s = params.get('s');
+      const r = params.get('r');
+      if (s && r) {
+        sessionStorage.setItem('bb_s', s);
+        sessionStorage.setItem('bb_r', r);
         renderViewer(content, params);
+      } else {
+        const storedS = sessionStorage.getItem('bb_s');
+        const storedR = sessionStorage.getItem('bb_r');
+        if (storedS && storedR) {
+          const restored = new URLSearchParams({ s: storedS, r: storedR });
+          history.replaceState(
+            null, '',
+            `#/view?s=${encodeURIComponent(storedS)}&r=${encodeURIComponent(storedR)}`
+          );
+          renderViewer(content, restored);
+        } else {
+          renderViewer(content, params);
+        }
       }
+    } catch (_e) {
+      // Fallback when sessionStorage is unavailable or throws
+      renderViewer(content, params);
     }
   } else {
     content.innerHTML = '<p class="info">Select a page from the sidebar.</p>';
@@ -98,7 +104,7 @@ route();
   function isVisible(el) {
     if (!el) return false;
     var style = window.getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return false;
     var rect = el.getBoundingClientRect();
     return rect.width > 0 && rect.height > 0;
   }
