@@ -210,6 +210,17 @@ route();
       return;
     }
 
+    // 📺 Channel Down (428) / Channel Up (427) — page down / page up in content
+    if (code === 427 || code === 428) {
+      var scrollPane = document.getElementById('bb-content');
+      if (scrollPane) {
+        var delta = scrollPane.clientHeight * 0.9;
+        scrollPane.scrollBy({ top: code === 428 ? delta : -delta, behavior: 'smooth' });
+      }
+      e.preventDefault();
+      return;
+    }
+
     // 🔴 Red (403) / 🟢 Green (404) — navigate to previous / next page
     if (code === 403 || code === 404) {
       const navRoutes = ['#/send', '#/view', '#/env', '#/debug'];
