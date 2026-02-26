@@ -19,7 +19,19 @@ export default defineConfig({
       transformIndexHtml: {
         order: 'post',
         handler(html) {
-          return html.replace(/<script\s+type="module"\s+crossorigin/g, '<script defer');
+          // Strip type="module" (and optional crossorigin) from <script> tags,
+          // replacing with defer so the IIFE executes on Tizen's older Chromium.
+          // Uses a callback to handle any attribute order Vite may produce.
+          return html.replace(
+            /<script\b([^>]*?)\btype=["']module["']([^>]*?)>/g,
+            (_match, before, after) => {
+              const rest = (before + after)
+                .replace(/\bcrossorigin(=["'][^"']*["'])?\s*/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+              return `<script defer${rest ? ' ' + rest : ''}>`;
+            },
+          );
         },
       },
     },

@@ -213,7 +213,10 @@ route();
     // 🔴 Red (403) / 🟢 Green (404) — navigate to previous / next page
     if (code === 403 || code === 404) {
       const navRoutes = ['#/send', '#/view', '#/env', '#/debug'];
-      const currentHash = '#' + (window.location.hash || '#/send').slice(1).split('?')[0];
+      const baseHash = (window.location.hash && window.location.hash !== '#')
+        ? window.location.hash
+        : '#/send';
+      const currentHash = baseHash.replace(/^#+/, '#').split('?')[0];
       let navIdx = navRoutes.indexOf(currentHash);
       if (navIdx < 0) navIdx = 0;
       if (code === 403) {

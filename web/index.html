@@ -529,7 +529,14 @@
 
       /* Sender: stack columns vertically on mobile */
       .sender-layout          { flex-direction: column; }
-      .sender-qr              { width: 100%; position: static; }
+      .sender-qr              { width: 100%; position: static; max-width: 320px; }
+
+      /* Wide tables: enable horizontal scrolling on narrow screens */
+      .env-table, .dbg-table, .hr-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
     }
   </style>
 </head>
