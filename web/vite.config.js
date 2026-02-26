@@ -5,7 +5,13 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootPkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'));
-const version = rootPkg.version;
+const rawVersion = String(rootPkg.version);
+if (!/^\d{4}$/.test(rawVersion)) {
+  throw new Error(
+    `Invalid version "${rawVersion}" in package.json. Expected a 4-digit string for versioned HTML filename.`,
+  );
+}
+const version = rawVersion;
 
 export default defineConfig({
   base: './',
@@ -52,14 +58,21 @@ export default defineConfig({
         // Remove stale index-*.html files left over from previous builds.
         if (existsSync(distDir)) {
           readdirSync(distDir)
-            .filter(f => /^index-\d+\.html$/.test(f))
+            .filter(f => /^index-\d{4}\.html$/.test(f))
             .forEach(f => unlinkSync(resolve(distDir, f)));
         }
         // Copy index.html → index-{version}.html (index.html kept for GitHub Pages).
-        copyFileSync(
-          resolve(distDir, 'index.html'),
-          resolve(distDir, `index-${version}.html`),
-        );
+        const indexHtmlPath = resolve(distDir, 'index.html');
+        if (existsSync(indexHtmlPath)) {
+          copyFileSync(
+            indexHtmlPath,
+            resolve(distDir, `index-${version}.html`),
+          );
+        } else {
+          console.warn(
+            `[versioned-html] Skipping versioned HTML copy: "${indexHtmlPath}" does not exist.`,
+          );
+        }
       },
     },
   ],
