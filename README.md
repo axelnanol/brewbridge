@@ -49,6 +49,20 @@ Open `http://localhost:5173/brewbridge/` in your browser.
 
 4. Note the Worker URL (e.g. `https://brewbridge-worker.<your-subdomain>.workers.dev`).
 
+5. Set the `ALLOWED_ORIGINS` secret on your Worker to the origin(s) that are allowed to call it. For a GitHub Pages deployment this is your Pages origin:
+   ```
+   https://<org>.github.io
+   ```
+   Multiple origins can be comma-separated. Loopback origins (`http://127.0.0.1`, `http://localhost`) are **always** allowed automatically so TizenBrew works without any configuration.
+
+   > **Note:** `ALLOWED_ORIGINS` is origin-based (scheme + host + optional port), not path-based. You **never** need to update this value when bumping the app version or changing which HTML file is served.
+
+   Set it with Wrangler:
+   ```bash
+   wrangler secret put ALLOWED_ORIGINS
+   # paste: https://<org>.github.io
+   ```
+
 ---
 
 ## Configuring the API base URL in the web app
@@ -94,27 +108,35 @@ The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. T
 4. TizenBrew fetches the latest release tag, reads `package.json`, and registers the module.
 5. BrewBridge now appears in your TizenBrew dashboard.
 
+### How updates reach the TV
+
+The old versioned-HTML scheme (`index-0005.html`) was meant to bypass jsdelivr's CDN cache by changing the URL on each release. It had a fatal flaw: the TV must first fetch a fresh `package.json` to discover the new `appPath` — but `package.json` itself was also cached by jsdelivr, so the TV never saw the new path and stayed stuck on the old file.
+
+The current approach is simpler and more reliable:
+
+1. Every push to `main` triggers CI, which builds `web/dist/` and commits the result.
+2. CI then calls the jsdelivr purge API for both `package.json` and `web/dist/index.html`, forcing the CDN to fetch fresh content from GitHub immediately.
+3. The JS bundle inside `web/dist/` is always content-hashed by Vite (e.g. `index-BZd8MSNk.js`), so the browser never serves a stale script.
+4. `appPath` stays fixed at `web/dist/index.html` — no need to update it on every version bump.
+
 ### Publishing a release
 
 TizenBrew fetches files directly from the repository at the release tag, so the built assets in `web/dist/` must be committed before the tag is created.
 
-The `deploy.yml` workflow now **automatically rebuilds and commits `web/dist/`** on every push to `main`, so the committed assets are always in sync with the source. A version-stamped entry-point (e.g. `web/dist/index-0005.html`) is also generated alongside `index.html`; this gives each release a unique URL on jsdelivr so that aggressive CDN caching never serves a stale copy to TizenBrew users.
-
 To cut a new release:
 
-1. Bump `version` in `package.json` (root) **and** update `appPath` to match the new version, e.g.:
+1. Bump `version` in `package.json` (root), e.g.:
    ```json
-   "version": "0005",
-   "appPath": "web/dist/index-0005.html"
+   "version": "0006"
    ```
-2. Push the change to `main` — CI will rebuild `web/dist/` (including `index-0005.html`) and commit it automatically. **Wait for the workflow to complete** (check the Actions tab) before creating the tag.
+2. Push the change to `main` — CI will rebuild `web/dist/` and purge the jsdelivr cache automatically. **Wait for the workflow to complete** (check the Actions tab) before creating the tag.
 3. Create and push a git tag matching the new version:
    ```bash
    git pull          # fetch the CI commit
-   git tag 0005
-   git push origin 0005
+   git tag 0006
+   git push origin 0006
    ```
-4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index-0005.html` directly from the repository at that tag.
+4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
 
 ---
 

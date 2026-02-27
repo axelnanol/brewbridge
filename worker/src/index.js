@@ -22,6 +22,11 @@ function getCorsOrigin(request, env) {
     // Dev fallback: allow all origins
     return '*';
   }
+  // Always allow loopback origins so the app works when served from
+  // TizenBrew, which hosts modules at http://127.0.0.1.
+  if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
+    return origin;
+  }
   if (allowed.includes(origin)) {
     return origin;
   }
