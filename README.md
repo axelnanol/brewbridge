@@ -49,6 +49,20 @@ Open `http://localhost:5173/brewbridge/` in your browser.
 
 4. Note the Worker URL (e.g. `https://brewbridge-worker.<your-subdomain>.workers.dev`).
 
+5. Set the `ALLOWED_ORIGINS` secret on your Worker to the origin(s) that are allowed to call it. For a GitHub Pages deployment this is your Pages origin:
+   ```
+   https://<org>.github.io
+   ```
+   Multiple origins can be comma-separated. Loopback origins (`http://127.0.0.1`, `http://localhost`) are **always** allowed automatically so TizenBrew works without any configuration.
+
+   > **Note:** `ALLOWED_ORIGINS` is origin-based (scheme + host + optional port), not path-based. You **never** need to update this value when bumping the app version or changing which HTML file is served.
+
+   Set it with Wrangler:
+   ```bash
+   wrangler secret put ALLOWED_ORIGINS
+   # paste: https://<org>.github.io
+   ```
+
 ---
 
 ## Configuring the API base URL in the web app
