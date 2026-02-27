@@ -98,7 +98,7 @@ The site will be available at `https://<org>.github.io/brewbridge/`.
 
 BrewBridge can be installed directly on a Samsung Smart TV running [TizenBrew](https://github.com/reisir/tizenbrew).
 
-The root-level `package.json` declares BrewBridge as a TizenBrew `app` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, `ColorF3Blue`, `ChannelUp`, and `ChannelDown`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Channel Up / Channel Down scroll the content pane up or down by one page; Red and Green navigate between app pages.
+The root-level `package.json` declares BrewBridge as a TizenBrew `mods` module. The `keys` field lists the [TVInputDevice](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvinputdevice-api.html) key names that the app registers with the TV: `ColorF0Red`, `ColorF1Green`, `ColorF2Yellow`, `ColorF3Blue`, `ChannelUp`, and `ChannelDown`. Yellow toggles the JSON/Human-Readable view (Viewer) or Text/JSON input mode (Sender); Blue scrolls the content back to the top; Channel Up / Channel Down scroll the content pane up or down by one page; Red and Green navigate between app pages.
 
 ### Install from the TV
 
@@ -127,14 +127,14 @@ To cut a new release:
 
 1. Bump `version` in `package.json` (root), e.g.:
    ```json
-   "version": "0006"
+   "version": "0007"
    ```
 2. Push the change to `main` — CI will rebuild `web/dist/` and purge the jsdelivr cache automatically. **Wait for the workflow to complete** (check the Actions tab) before creating the tag.
 3. Create and push a git tag matching the new version:
    ```bash
    git pull          # fetch the CI commit
-   git tag 0006
-   git push origin 0006
+   git tag 0007
+   git push origin 0007
    ```
 4. Create a GitHub release from that tag. TizenBrew will read `package.json` and serve `web/dist/index.html` directly from the repository at that tag.
 
@@ -160,7 +160,7 @@ To cut a new release:
 
 ```
 brewbridge/
-├── package.json          TizenBrew module metadata (app type)
+├── package.json          TizenBrew module metadata (mods type)
 ├── web/                  Vite + vanilla JS web app
 │   ├── src/
 │   │   ├── main.js       Hash router
