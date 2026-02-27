@@ -51,6 +51,11 @@ jobs:
             git push
           fi
 
+      - name: Purge jsdelivr CDN cache
+        run: |
+          curl -f "https://purge.jsdelivr.net/gh/axelnanol/brewbridge@main/package.json" || echo "Warning: jsdelivr purge for package.json failed"
+          curl -f "https://purge.jsdelivr.net/gh/axelnanol/brewbridge@main/web/dist/index.html" || echo "Warning: jsdelivr purge for index.html failed"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
