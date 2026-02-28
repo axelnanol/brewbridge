@@ -4,6 +4,105 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BrewBridge</title>
+  <!-- Fallback styles for Chrome ≤ 48 which lacks CSS custom-property support.
+       All var() declarations in the main style block below will override these
+       in any browser that supports CSS custom properties (Chrome 49+). -->
+  <style>
+    html, body      { background: #0d1117; color: #e6edf3; }
+    #bb-sidebar     { background: #161b22; border-right: 2px solid #30363d; width: 280px; min-width: 280px; }
+    #bb-logo        { border-bottom: 2px solid #30363d; color: #58a6ff; }
+    #bb-logo span   { color: #8b949e; }
+    .nav-link       { color: #e6edf3; }
+    .nav-link:hover,
+    .nav-link:focus { border-left-color: #58a6ff; }
+    .nav-link.active{ border-left-color: #58a6ff; color: #58a6ff; }
+    #bb-topbar      { background: #161b22; border-bottom: 2px solid #30363d; color: #8b949e; }
+    h1              { color: #58a6ff; }
+    h2              { color: #e6edf3; border-bottom: 2px solid #30363d; }
+    h3              { color: #e6edf3; }
+    button          { background: #1f6feb; color: #e6edf3; }
+    button:hover,
+    button:focus    { background: #58a6ff; }
+    button:disabled { color: #8b949e; }
+    textarea        { border-color: #30363d; }
+    .card           { background: #161b22; border-color: #30363d; }
+    .info           { color: #8b949e; }
+    .url-box        { border-color: #30363d; }
+    .message-item   { border-left-color: #58a6ff; }
+    .message-meta   { color: #8b949e; }
+    /* hr-dl: flex fallback for browsers without CSS Grid (Chrome ≤ 56) */
+    .hr-dl          { display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; gap: 0.2rem 1rem; }
+    .hr-dl dt       { color: #58a6ff; }
+    .hr-dl dd       { color: #e6edf3; }
+    .hr-table th    { background: #161b22; color: #58a6ff; border-color: #30363d; }
+    .hr-table td    { border-color: #30363d; }
+    .hr-table.hr-nested td.hr-key { color: #58a6ff; }
+    .hr-str         { color: #e6edf3; }
+    .hr-null,
+    .hr-empty       { color: #8b949e; }
+    code            { border-color: #30363d; }
+    kbd             { background: #161b22; border-color: #30363d; }
+    hr              { border-top-color: #30363d; }
+    .env-table th   { background: #161b22; color: #58a6ff; border-color: #30363d; }
+    .env-table td   { border-color: #30363d; }
+    .env-key        { color: #58a6ff; }
+    .env-val        { color: #e6edf3; }
+    .env-desc       { color: #8b949e; }
+    .dbg-table th   { background: #161b22; color: #58a6ff; border-color: #30363d; }
+    .dbg-table td   { border-color: #30363d; }
+    .dbg-key        { color: #58a6ff; }
+    :focus          { outline: 3px solid #f78166; }
+    #bb-hints       { background: #161b22; border-top: 2px solid #30363d; color: #8b949e; }
+    #bb-menu-btn    { border: 2px solid #30363d; color: #e6edf3; }
+  </style>
+  <!-- Polyfills for APIs missing in Chrome 47–68 (Tizen TVs 2015–2018).
+       These run synchronously before the deferred main bundle. -->
+  <script>
+    // URLSearchParams — Chrome 49+
+    if (typeof URLSearchParams === 'undefined') {
+      (function () {
+        function URLSearchParams(init) {
+          this._d = {};
+          var self = this;
+          if (typeof init === 'string') {
+            var s = init.charAt(0) === '?' ? init.slice(1) : init;
+            s.split('&').forEach(function (part) {
+              if (!part) return;
+              var eq = part.indexOf('=');
+              var k = decodeURIComponent(eq < 0 ? part : part.slice(0, eq));
+              var v = eq < 0 ? '' : decodeURIComponent(part.slice(eq + 1).replace(/\+/g, ' '));
+              self._d[k] = v;
+            });
+          } else if (init && typeof init === 'object') {
+            Object.keys(init).forEach(function (k) { self._d[k] = String(init[k]); });
+          }
+        }
+        URLSearchParams.prototype.get = function (k) {
+          return Object.prototype.hasOwnProperty.call(this._d, k) ? this._d[k] : null;
+        };
+        URLSearchParams.prototype.set = function (k, v) { this._d[k] = String(v); };
+        URLSearchParams.prototype.toString = function () {
+          var d = this._d;
+          return Object.keys(d).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(d[k]);
+          }).join('&');
+        };
+        window.URLSearchParams = URLSearchParams;
+      }());
+    }
+    // Object.entries — Chrome 54+
+    if (!Object.entries) {
+      Object.entries = function (obj) {
+        return Object.keys(obj).map(function (k) { return [k, obj[k]]; });
+      };
+    }
+    // Array.prototype.flatMap — Chrome 69+
+    if (!Array.prototype.flatMap) {
+      Array.prototype.flatMap = function (fn) {
+        return Array.prototype.concat.apply([], this.map(fn));
+      };
+    }
+  </script>
   <style>
     /* ── Reset & Base ───────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -486,7 +585,10 @@
       #bb-overlay {
         display: block;
         position: fixed;
-        inset: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
         background: rgba(0, 0, 0, 0.6);
         z-index: 200;
         opacity: 0;
@@ -539,7 +641,7 @@
       }
     }
   </style>
-  <script defer src="./assets/index-BA8aJkBZ.js"></script>
+  <script defer src="./assets/index-BWF7UFYQ.js"></script>
 </head>
 <body>
   <div id="bb-shell">
