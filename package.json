@@ -2,8 +2,9 @@
   "name": "@axelnanol/brewbridge",
   "appName": "BrewBridge",
   "description": "TizenBrew data bridge for sending and viewing structured messages between devices",
-  "version": "0007",
+  "version": "0008",
   "packageType": "mods",
-  "appPath": "web/dist/index.html",
+  "websiteURL": "https://axelnanol.github.io/brewbridge/index.html?v=0008",
+  "main": "main.js",
   "keys": ["ColorF0Red", "ColorF1Green", "ColorF2Yellow", "ColorF3Blue", "ChannelUp", "ChannelDown"]
 }
