@@ -2,7 +2,7 @@
   "name": "@axelnanol/brewbridge",
   "appName": "BrewBridge",
   "description": "TizenBrew data bridge for sending and viewing structured messages between devices",
-  "version": "0007",
+  "version": "0008",
   "packageType": "mods",
   "websiteURL": "https://axelnanol.github.io/brewbridge/",
   "main": "main.js",
